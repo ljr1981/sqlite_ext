@@ -30,8 +30,6 @@ feature -- Test routines
 
 	select_tests
 			-- New test routine
-		note
-			testing:  "execution/isolated", "execution/serial"
 		local
 			l_item: SLE_READ
 			l_sql: STRING

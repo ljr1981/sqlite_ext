@@ -60,7 +60,7 @@ feature -- Table
 			Result.append_string_general (a_table_name)
 			Result.append_character (space)
 			Result.append_character (open_paren)
-			Result.append_string_general (integer_primary_key_field (a_pk, True, True))
+			Result.append_string_general (integer_primary_key_field (a_pk, True, False))
 			Result.append_character (comma)
 			Result.append_character (space)
 			across

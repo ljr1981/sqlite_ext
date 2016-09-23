@@ -43,10 +43,23 @@ feature -- SQL String Constants
 	where_kw: STRING = " WHERE "
 	or_kw: STRING = " OR "
 
+
+	null_type_code: INTEGER = 0
+			--NULL. The value is a NULL value.
+
 	integer_type_code: INTEGER = 1
-	text_type_code: INTEGER = 2
-	boolean_type_code: INTEGER = 3
-	date_type_code: INTEGER = 4
+			--INTEGER. The value is a signed integer, stored in 1, 2, 3, 4, 6, or 8 bytes depending on the magnitude of the value.
+
+	real_type_code: INTEGER = 2
+			--REAL. The value is a floating point value, stored as an 8-byte IEEE floating point number.
+
+	text_type_code: INTEGER = 3
+	boolean_type_code: INTEGER = 4
+	date_type_code: INTEGER = 5
+			--TEXT. The value is a text string, stored using the database encoding (UTF-8, UTF-16BE or UTF-16LE).
+
+	blob_type_code: INTEGER = 6
+			--BLOB. The value is a blob of data, stored exactly as it was input.
 
 	create_table_kw: STRING = " CREATE TABLE "
 
@@ -57,5 +70,11 @@ feature -- SQL String Constants
 	comma: CHARACTER = ','
 	closing_semi_colon: CHARACTER = ';'
 	space: CHARACTER = ' '
+
+	db: STRING = "_db"
+	pk: STRING = "_pk"
+	ck: STRING = "_ck"
+	created_on_db_field_name: STRING = "created_on_db"
+	modified_on_db_field_name: STRING = "modified_on_db"
 
 end

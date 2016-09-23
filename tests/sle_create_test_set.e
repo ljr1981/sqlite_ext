@@ -30,8 +30,6 @@ feature -- Test routines
 
 	create_tests
 			-- New test routine
-		note
-			testing:  "execution/isolated", "execution/serial"
 		local
 			l_item: SLE_CREATE
 			l_fields: ARRAY [TUPLE [col_name, col_value: STRING]]

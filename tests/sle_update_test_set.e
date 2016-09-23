@@ -30,8 +30,6 @@ feature -- Test routines
 
 	update_tests
 			-- New test routine
-		note
-			testing:  "execution/isolated", "execution/serial"
 		local
 			l_item: SLE_UPDATE
 			l_sql: STRING
