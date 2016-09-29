@@ -44,6 +44,19 @@ feature -- SQL String Constants
 	or_kw: STRING = " OR "
 
 
+	type_codes: ARRAY [INTEGER]
+		once
+			Result := <<
+					null_type_code,
+					integer_type_code,
+					real_type_code,
+					text_type_code,
+					boolean_type_code,
+					date_type_code,
+					blob_type_code
+					>>
+		end
+
 	null_type_code: INTEGER = 0
 			--NULL. The value is a NULL value.
 
@@ -71,9 +84,9 @@ feature -- SQL String Constants
 	closing_semi_colon: CHARACTER = ';'
 	space: CHARACTER = ' '
 
-	db: STRING = "_db"
-	pk: STRING = "_pk"
-	ck: STRING = "_ck"
+	db: STRING = "db"
+	pk: STRING = "pk"
+	ck: STRING = "ck"
 	created_on_db_field_name: STRING = "created_on_db"
 	modified_on_db_field_name: STRING = "modified_on_db"
 

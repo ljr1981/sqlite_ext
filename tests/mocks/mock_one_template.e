@@ -6,16 +6,17 @@ inherit
 
 feature -- Access
 
+	table_name: STRING = "mock_one"
+
 	pk: STRING = "mock_pk"
 
-	fields: ARRAYED_LIST [STRING]
+	fields: HASH_TABLE [TUPLE [type_code: INTEGER], STRING]
 		once
-			create Result.make_from_array (<<
-				"text_field_dbe",
-				"integer_field_dbe",
-				"boolean_field_dbe",
-				"date_field_dbe"
-				>>)
+			create Result.make (4)
+			Result.force ([{SLE_CONSTANTS}.text_type_code], "text_field_db_asc")
+			Result.force ([{SLE_CONSTANTS}.integer_type_code], "integer_field_db_asc")
+			Result.force ([{SLE_CONSTANTS}.boolean_type_code], "boolean_field_db_asc")
+			Result.force ([{SLE_CONSTANTS}.date_type_code], "date_field_db_asc")
 		end
 
 	base_type: detachable MOCK_ONE

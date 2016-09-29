@@ -37,6 +37,14 @@ feature -- Database
 
 feature -- Table
 
+	create_new_table_from_template (a_database: SQLITE_DATABASE; a_object: SLE_PERSISTABLE; a_template: SLE_OBJECT_TEMPLATE)
+		local
+			l_modify: SQLITE_MODIFY_STATEMENT
+		do
+			create l_modify.make (generate_new_table_from_template_sql (a_object, a_template), a_database)
+			l_modify.execute
+		end
+
 	create_new_table (a_database: SQLITE_DATABASE; a_table_name, a_pk: STRING; a_fields: ARRAY [TUPLE [name: STRING; type_code: INTEGER; is_asc: BOOLEAN]])
 			-- `create_new_table' in `a_database' as `a_table_name' with `a_pk' field and then `a_fields' as needed.
 		local
@@ -48,6 +56,10 @@ feature -- Table
 			l_modify.execute
 		end
 
+	generate_new_table_from_template_sql (a_object: SLE_PERSISTABLE; a_template: SLE_OBJECT_TEMPLATE): STRING
+		do
+			Result := generate_new_table_sql (a_template.table_name, a_template.primary_key_field_name (a_object), a_template.field_specifications (a_object))
+		end
 
 	generate_new_table_sql (a_table_name, a_pk: STRING; a_fields: ARRAY [TUPLE [name: STRING; type_code: INTEGER; is_asc: BOOLEAN]]): STRING
 			-- `generate_new_table_sql' for `create_new_table'.
