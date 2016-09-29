@@ -31,6 +31,8 @@ feature -- Supporting
 
 	mock_pk: INTEGER_64
 
+	table_name: STRING = "mock_one"
+
 	template: detachable MOCK_ONE_TEMPLATE
 
 	base_type: detachable MOCK_ONE

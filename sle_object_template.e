@@ -6,26 +6,26 @@ inherit
 
 feature -- Access
 
-	table_name: STRING
-			--
-		deferred
-		end
-
-	pk (a_object: attached like base_type): detachable STRING
-			--
+	primary_key_field_name (a_object: attached like base_type): STRING
+			-- `primary_key_field_name' of Current `a_object' `base_type'.
 		do
-			if attached pk_fields (a_object) [1] as al_pk_spec then
+			check attached pk_fields (a_object) [1] as al_pk_spec then
 				Result := al_pk_spec.field_name
 			end
 		end
 
 	base_type: detachable SLE_PERSISTABLE
+			-- `base_type' controls access to the features of this template.
 		deferred
 		end
 
 feature -- Basic Ops
 
 	field_specifications (a_object: attached like base_type): ARRAY [TUPLE [name: STRING_8; type_code: INTEGER_32; is_asc: BOOLEAN]]
+			-- `field_specifications' of `a_object' like `base_type', resulting in:
+			-- TUPLE [name, type_code, is_asc]
+			-- Where name is the field-name stored in the database and type_code controls
+			-- what datatype is used. The is_asc controls if the ordering is ASC or DESC.
 		local
 			l_specs: ARRAYED_LIST [TUPLE [name: STRING_8; type_code: INTEGER_32; is_asc: BOOLEAN]]
 		do
@@ -39,19 +39,9 @@ feature -- Basic Ops
 		end
 
 	db_fields (a_object: attached like base_type): attached like fields_specifications_anchor
-			-- Database fields.
+			-- Database fields list of TUPLE [field_name, is_desc, type_code, field_object].
 		do
 			Result := fields_list (a_object, {SLE_CONSTANTS}.db)
-		end
-
-	primary_key_field_name (a_object: attached like base_type): STRING
-		local
-			l_list: ARRAYED_LIST [TUPLE [field_name: STRING; field_object: ANY]]
-		do
-			l_list := pk_fields (a_object)
-			check has_one: l_list.count > 0 then
-				Result := l_list [1].field_name
-			end
 		end
 
 	pk_fields (a_object: attached like base_type): attached like fields_specifications_anchor

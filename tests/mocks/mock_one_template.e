@@ -6,8 +6,6 @@ inherit
 
 feature -- Access
 
-	table_name: STRING = "mock_one"
-
 	base_type: detachable MOCK_ONE
 
 end

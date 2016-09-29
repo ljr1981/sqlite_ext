@@ -58,7 +58,7 @@ feature -- Table
 
 	generate_new_table_from_template_sql (a_object: SLE_PERSISTABLE; a_template: SLE_OBJECT_TEMPLATE): STRING
 		do
-			Result := generate_new_table_sql (a_template.table_name, a_template.primary_key_field_name (a_object), a_template.field_specifications (a_object))
+			Result := generate_new_table_sql (a_object.table_name, a_template.primary_key_field_name (a_object), a_template.field_specifications (a_object))
 		end
 
 	generate_new_table_sql (a_table_name, a_pk: STRING; a_fields: ARRAY [TUPLE [name: STRING; type_code: INTEGER; is_asc: BOOLEAN]]): STRING
