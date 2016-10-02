@@ -44,7 +44,7 @@ feature -- Test routines
 
 feature {NONE} -- Support
 
-	new_table_string: STRING = " CREATE TABLE  IF NOT EXISTS my_new_table (new_id PRIMARY KEY  ASC , my_integer INTEGER  ASC ,my_text TEXT  ASC ,my_boolean INTEGER  ASC ,my_date TEXT  ASC );"
+	new_table_string: STRING = " CREATE TABLE  IF NOT EXISTS my_new_table (new_id INTEGER  PRIMARY KEY  ASC  AUTOINCREMENT , my_integer INTEGER  ASC ,my_text TEXT  ASC ,my_boolean INTEGER  ASC ,my_date TEXT  ASC );"
 
 end
 

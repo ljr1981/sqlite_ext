@@ -7,6 +7,8 @@ class
 inherit
 	SLE_CONSTANTS
 
+	LE_LOGGING_AWARE
+
 feature -- Database
 
 	create_new_database (a_path: detachable PATH): SQLITE_DATABASE
@@ -36,6 +38,28 @@ feature -- Database
 			-- Optional `path' for `create_new_database'.
 
 feature -- Table
+
+	insert (a_object: SLE_PERSISTABLE; a_database: SQLITE_DATABASE)
+		local
+			l_insert: SLE_CREATE
+			l_column_values: ARRAYED_LIST [TUPLE [col_name: STRING_8; col_value: STRING_8]]
+			l_sql: STRING
+		do
+			create l_insert
+			create l_column_values.make (10)
+			across
+				a_object.template.db_fields (a_object) as ic_specs
+			loop
+				if attached ic_specs.item.field_object as al_object then
+					if (<<{SLE_CONSTANTS}.integer_type_code, {SLE_CONSTANTS}.real_type_code>>).has (ic_specs.item.type_code) then
+						l_column_values.force ([ic_specs.item.field_name, al_object.out])
+					else
+						l_column_values.force ([ic_specs.item.field_name, "'" + al_object.out + "'"])
+					end
+				end
+			end
+			l_insert.insert (a_database, a_object.table_name, l_column_values.to_array)
+		end
 
 	create_new_table_from_template (a_database: SQLITE_DATABASE; a_object: SLE_PERSISTABLE; a_template: SLE_OBJECT_TEMPLATE)
 		local
@@ -72,7 +96,7 @@ feature -- Table
 			Result.append_string_general (a_table_name)
 			Result.append_character (space)
 			Result.append_character (open_paren)
-			Result.append_string_general (integer_primary_key_field (a_pk, True, False))
+			Result.append_string_general (integer_primary_key_field (a_pk))
 			Result.append_character (comma)
 			Result.append_character (space)
 			across
@@ -108,14 +132,13 @@ feature -- Fields
 			Result := field (a_name, " INTEGER ", a_is_asc)
 		end
 
-	integer_primary_key_field (a_name: STRING; a_is_asc, a_auto_increment: BOOLEAN): STRING
+	integer_primary_key_field (a_name: STRING): STRING
 		do
 			Result := a_name
+			Result.append_string_general (" INTEGER ")
 			Result.append_string_general (" PRIMARY KEY ")
-			Result.append_string_general (asc_or_desc (a_is_asc))
-			if a_auto_increment then
-				Result.append_string_general (" AUTOINCREMENT ")
-			end
+			Result.append_string_general (asc_or_desc (True))
+			Result.append_string_general (" AUTOINCREMENT ")
 		end
 
 	text_field (a_name: STRING; a_is_asc: BOOLEAN): STRING

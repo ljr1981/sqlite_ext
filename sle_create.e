@@ -32,6 +32,7 @@ feature -- Basic Ops
 			l_sql: STRING
 		do
 			l_sql := generate_insert_sql (a_table_name, a_column_values)
+			logger.write_information (l_sql)
 			create l_modify.make (l_sql, a_database)
 			l_modify.execute
 		end

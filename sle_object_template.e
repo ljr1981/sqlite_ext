@@ -60,11 +60,13 @@ feature -- Basic Ops
 
 	fields_list (a_object: attached like base_type; a_extension: STRING): attached like fields_specifications_anchor
 		local
-			i: INTEGER
+			i,j: INTEGER
 			l_field_name: STRING
-			l_field_object: ANY
+			l_field_object: detachable ANY
 			l_parts: LIST [STRING]
 			l_type_code: INTEGER
+			l_type: TYPE [detachable ANY]
+			l_type_id: INTEGER
 		do
 			i := reflector.field_count (a_object)
 			check has_fields: i > 0 end
@@ -72,29 +74,34 @@ feature -- Basic Ops
 			across
 				(1 |..| i) as ic
 			loop
-				l_field_name := reflector.field_name (ic.item, a_object)
+				j := ic.item
+				l_field_name := reflector.field_name (j, a_object)
 				l_parts := l_field_name.split ('_')
-				l_field_object := reflector.field (ic.item, a_object)
-
-				if attached {INTEGER_32} l_field_object or attached {INTEGER_64} l_field_object then
-					l_type_code := {SLE_CONSTANTS}.integer_type_code
-				elseif attached {REAL_32} l_field_object or attached {REAL_64} l_field_object then
-					l_type_code := {SLE_CONSTANTS}.real_type_code
-				elseif attached {STRING_8} l_field_object or attached {STRING_32} l_field_object then
-					l_type_code := {SLE_CONSTANTS}.text_type_code
-				elseif attached {BOOLEAN} l_field_object then
-					l_type_code := {SLE_CONSTANTS}.boolean_type_code
-				elseif attached {DATE} l_field_object or attached {TIME} l_field_object or attached {DATE_TIME} l_field_object then
-					l_type_code := {SLE_CONSTANTS}.date_type_code
-				end
-
 				if across l_parts as ic_parts some ic_parts.item.same_string (a_extension) end then
+					l_field_object := reflector.field (j, a_object)
+					l_type_id := reflector.field_type (j, a_object)
+					l_type := reflector.type_of_type (l_type_id)
+
+					if attached {INTEGER_32} l_field_object or attached {INTEGER_64} l_field_object then
+						l_type_code := {SLE_CONSTANTS}.integer_type_code
+					elseif attached {REAL_32} l_field_object or attached {REAL_64} l_field_object then
+						l_type_code := {SLE_CONSTANTS}.real_type_code
+					elseif attached {STRING_8} l_field_object or attached {STRING_32} l_field_object then
+						l_type_code := {SLE_CONSTANTS}.text_type_code
+					elseif attached {BOOLEAN} l_field_object then
+						l_type_code := {SLE_CONSTANTS}.boolean_type_code
+					elseif attached {DATE} l_field_object or attached {TIME} l_field_object or attached {DATE_TIME} l_field_object then
+						l_type_code := {SLE_CONSTANTS}.date_type_code
+					elseif not attached {ANY} l_field_object then
+						l_type_code := {SLE_CONSTANTS}.text_type_code
+					end
+
 					if l_field_name.same_string ({SLE_CONSTANTS}.created_on_db_field_name) then
 						Result.force ([l_field_name, False, {SLE_CONSTANTS}.date_type_code, a_object.created_on_db])
 					elseif l_field_name.same_string ({SLE_CONSTANTS}.modified_on_db_field_name) then
 						Result.force ([l_field_name, False, {SLE_CONSTANTS}.date_type_code, a_object.modified_on_db])
-					elseif attached reflector.field (ic.item, a_object) as al_field_object then
-						Result.force ([l_field_name, not across l_parts as ic_asc_parts some ic_asc_parts.item.same_string ("desc") end, l_type_code, al_field_object])
+					else
+						Result.force ([l_field_name, not across l_parts as ic_asc_parts some ic_asc_parts.item.same_string ("desc") end, l_type_code, l_field_object])
 					end
 				end
 			end
@@ -102,6 +109,6 @@ feature -- Basic Ops
 
 feature {NONE} --
 
-	fields_specifications_anchor: detachable ARRAYED_LIST [TUPLE [field_name: STRING; is_desc: BOOLEAN; type_code: INTEGER; field_object: ANY]]
+	fields_specifications_anchor: detachable ARRAYED_LIST [TUPLE [field_name: STRING; is_desc: BOOLEAN; type_code: INTEGER; field_object: detachable ANY]]
 
 end

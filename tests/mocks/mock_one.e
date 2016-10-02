@@ -33,7 +33,9 @@ feature -- Supporting
 
 	table_name: STRING = "mock_one"
 
-	template: detachable MOCK_ONE_TEMPLATE
+	internal_template: detachable MOCK_ONE_TEMPLATE
+
+	create_template do create internal_template end
 
 	base_type: detachable MOCK_ONE
 

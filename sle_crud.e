@@ -1,6 +1,9 @@
 deferred class
 	SLE_CRUD
 
+inherit
+	LE_LOGGING_AWARE
+
 feature -- Settings
 
 	is_insert_only: BOOLEAN
