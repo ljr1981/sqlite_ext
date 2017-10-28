@@ -9,6 +9,49 @@ inherit
 
 	LE_LOGGING_AWARE
 
+feature -- QA/QC: PK/UUID/hash consistency/uniqueness
+
+	test_uniqueness (a_table_spec, a_field_spec: STRING; a_value: INTEGER; a_db: SQLITE_DATABASE)
+			-- Determine if `a_value' in `a_field_spec' of `a_table_spec' is unique in `a_db'?
+		note
+			design: "[
+				This routine works with `on_is_unique_result' and `is_unique_count' to set up for `is_unique'.
+				Call this routine when you need to know if an integer field value on a table is unique
+				or not.
+				]"
+			history: "[
+				Instead of using the generated integer IDs from the database, we use UUIDs and then
+				hash them to an integer. The integer will only be unique 10-25% of the time, so this
+				routine is here to provide feedback that the number is duplicated, and then force
+				the caller to generate a new UUID --> new hash integer and test again and again until
+				it is unique. This puts the responsibility of uniqueness on the code and not the database.
+				The purpose of this is to protect against an edge case where the uniqueness of the PKs
+				in the DB gets screwed up.
+				
+				NOTE: It is presumed that the UUID will also be stored in the DB so the veracity of the
+				integer hash key can be validated (e.g. when the object is loaded back the loaded hash
+				ought to match a regenerated hash from the UUID telling us that the data came back good).
+				]"
+		local
+			lq: SQLITE_QUERY_STATEMENT
+		do
+			is_unique_count := 0
+			create lq.make ("SELECT " + a_field_spec + " FROM " + a_table_spec + " WHERE " + a_field_spec + " = " + a_value.out + ";", a_db)
+			lq.execute (agent on_is_unique_result)
+		end
+
+	is_unique: BOOLEAN
+		do
+			Result := is_unique_count = 0
+		end
+
+	is_unique_count: INTEGER
+
+	on_is_unique_result (a_row: SQLITE_RESULT_ROW): BOOLEAN
+		do
+			is_unique_count := is_unique_count + 1
+		end
+
 feature -- Database
 
 	create_new_database (a_path: detachable PATH): SQLITE_DATABASE
