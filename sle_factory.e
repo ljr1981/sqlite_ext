@@ -201,7 +201,7 @@ feature -- Fields
 
 	field (a_name, a_type: STRING; a_is_asc: BOOLEAN): STRING
 		do
-			Result := a_name
+			Result := a_name.twin
 			Result.append_string_general (a_type)
 			Result.append_string_general (asc_or_desc (a_is_asc))
 		end

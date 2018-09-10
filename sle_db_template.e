@@ -48,7 +48,7 @@ feature -- Access
 
 feature -- New Table Specs
 
-	new_table_spec: ARRAY [TUPLE [name: STRING_8; type_code: INTEGER_32; is_asc: BOOLEAN]]
+	new_table_spec: ARRAY [TUPLE [name: STRING_8; type_code: INTEGER_32; is_asc: BOOLEAN; field_ref: detachable FUNCTION [ANY]]]
 		deferred
 		end
 
