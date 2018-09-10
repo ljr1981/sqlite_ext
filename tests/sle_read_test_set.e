@@ -33,23 +33,23 @@ feature -- Test routines
 		local
 			l_item: SLE_READ
 			l_sql: STRING
-			a_src_tables: ARRAY [TUPLE [STRING_8, detachable STRING_8, detachable STRING_8]]
+			l_src_tables: ARRAY [TUPLE [STRING_8, detachable STRING_8, detachable STRING_8]]
 		do
 			create l_item
 				-- Basic SQL SELECT ALL with JOIN between two tables
-			a_src_tables := <<
+			l_src_tables := <<
 							["my_src_table1", Void, Void],
 							["my_src_table2", "my_src_table1", "id1 = pk1"]
 							>>
-			l_sql := l_item.generate_select_all_sql ("my_table", False, a_src_tables)
+			l_sql := l_item.generate_select_all_sql ("my_table", False, l_src_tables)
 			assert_strings_equal ("simple_sql_with_join", " SELECT  ALL   FROM my_src_table1 my_src_table2 JOIN my_src_table1 ON id1 = pk1 ", l_sql)
 
 				-- Basic SQL SELECT DISTINCT ALL with JOIN between two tables
-			a_src_tables := <<
+			l_src_tables := <<
 							["my_src_table1", Void, Void],
 							["my_src_table2", "my_src_table1", "id1 = pk1"]
 							>>
-			l_sql := l_item.generate_select_all_sql ("my_table", True, a_src_tables)
+			l_sql := l_item.generate_select_all_sql ("my_table", True, l_src_tables)
 			assert_strings_equal ("simple_sql_with_join", " SELECT  DISTINCT  ALL   FROM my_src_table1 my_src_table2 JOIN my_src_table1 ON id1 = pk1 ", l_sql)
 		end
 
