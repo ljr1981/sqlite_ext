@@ -22,6 +22,24 @@ feature {NONE} -- Initialization
 
 feature -- Basic Ops
 
+	execute_on_settings
+			-- `insert' from attribute settings
+		do
+			execute (database_attached, table_name_attached, columns_as_array, where)
+		end
+
+	execute (a_database: like database; a_table_name: STRING; a_column_values: ARRAY [TUPLE [col_name, col_expression: STRING]]; a_where: detachable STRING)
+			--
+		local
+			l_modify: SQLITE_MODIFY_STATEMENT
+			l_sql: STRING
+		do
+			l_sql := generate_update_sql (a_table_name, a_column_values, a_where)
+			logger.write_information (l_sql)
+			create l_modify.make (l_sql, database_attached)
+			l_modify.execute
+		end
+
 	generate_update_sql (a_table_name: STRING; a_column_values: ARRAY [TUPLE [col_name, col_expression: STRING]]; a_where: detachable STRING): STRING
 			-- For example: UPDATE <<TABLE_NAME>> SET <<COLUMN_NAME>> = <<EXPRESSION>>, [ ... ] WHERE <<EXPRESSION>>
 		do

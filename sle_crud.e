@@ -4,6 +4,82 @@ deferred class
 inherit
 	LE_LOGGING_AWARE
 
+feature -- Access: All
+
+	clear_all do clear_database; clear_table_name; clear_columns end
+
+	clear_table_and_columns do clear_table_name; clear_columns end
+
+feature -- Access: Database
+
+	database: detachable SQLITE_DATABASE
+
+	database_attached: attached like database do check has: attached database as al_item then Result := al_item end end
+
+	clear_database do database := Void end
+
+	set_database (a_db: attached like database) do database := a_db end
+
+feature -- Access: Table Name
+
+	table_name: detachable STRING
+
+	table_name_attached: attached like table_name do check has: attached table_name as al_item then Result := al_item end end
+
+	clear_table_name do table_name := Void end
+
+	set_table_name (a_name: attached like table_name) do table_name := a_name end
+
+feature -- Access: Columns
+
+	columns: ARRAYED_LIST [TUPLE [col_name, col_value: STRING]] attribute create Result.make (100) end
+
+	column_names: ARRAYED_LIST [STRING]
+		do
+			create Result.make (columns.count)
+			across
+				columns as ic
+			loop
+				Result.force (ic.item.col_name)
+			end
+		end
+
+	columns_as_array: ARRAY [TUPLE [col_name, col_value: STRING]] do Result := columns.to_array end
+
+	column_names_as_array: ARRAY [STRING] do Result := column_names.to_array end
+
+	clear_columns do columns.wipe_out end
+
+	set_columns (a_columns: ARRAY [TUPLE [col_name, col_value: STRING]])
+		do
+			across
+				a_columns as ic
+			loop
+				columns.force (ic.item)
+			end
+		end
+
+feature -- Access: Where
+
+	where: detachable STRING
+
+	where_attached: attached like where do check has: attached where as al_item then Result := al_item end end
+
+	clear_where do where := Void end
+
+	set_where (a_item: attached like where) do where := a_item end
+
+feature -- Operations
+
+	execute_on_settings
+			-- `do' from attribute settings
+		require
+			has_database: attached database
+			has_table_name: attached table_name
+			has_columns: not columns.is_empty
+		deferred
+		end
+
 feature -- Settings
 
 	is_insert_only: BOOLEAN

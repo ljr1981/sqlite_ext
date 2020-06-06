@@ -25,6 +25,12 @@ feature {NONE} -- Initialization
 
 feature -- Basic Ops
 
+	execute_on_settings
+			-- `insert' from attribute settings
+		do
+			insert (database_attached, table_name_attached, columns.to_array)
+		end
+
 	insert (a_database: SQLITE_DATABASE; a_table_name: STRING; a_column_values: ARRAY [TUPLE [col_name, col_value: STRING]])
 			--
 		local

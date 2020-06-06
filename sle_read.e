@@ -25,6 +25,24 @@ feature {NONE} -- Initialization
 
 feature -- Basic Ops
 
+	execute_on_settings
+			--
+		do
+			execute (database_attached, table_name_attached, column_names_as_array, where)
+		end
+
+	execute (a_database: like database; a_table_name: STRING; a_columns: ARRAY [STRING]; a_where: detachable STRING)
+			--
+		local
+			l_modify: SQLITE_MODIFY_STATEMENT
+			l_sql: STRING
+		do
+			l_sql := generate_base_select_something_where_sql (a_table_name, True, a_columns, <<[a_table_name, Void, Void]>>, a_where)
+			logger.write_information (l_sql)
+			create l_modify.make (l_sql, database_attached)
+			l_modify.execute
+		end
+
 	generate_select_distinct_sql (a_table_name: STRING; a_columns: ARRAY [STRING]; a_src_tables: ARRAY [TUPLE [table_name: STRING; join, on: detachable STRING]]): STRING
 		do
 			Result := generate_base_select_something_where_sql (a_table_name, is_distinct, a_columns, a_src_tables, Void)
