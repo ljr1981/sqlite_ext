@@ -128,6 +128,16 @@ feature -- Table
 			Result := generate_new_table_sql (a_object.table_name, a_template.primary_key_field_name (a_object), a_template.field_specifications (a_object))
 		end
 
+	new_table_sql: STRING
+			-- Generate a `new_table_sql' string.
+		require
+			has_table: not table_name.is_empty
+			has_pk: not pk_name.is_empty
+			has_fields: not fields.is_empty
+		do
+			Result := generate_new_table_sql (table_name, pk_name, field_array)
+		end
+
 	generate_new_table_sql (a_table_name, a_pk: STRING; a_fields: ARRAY [TUPLE [name: STRING; type_code: INTEGER; is_asc: BOOLEAN]]): STRING
 			-- `generate_new_table_sql' for `create_new_table'.
 		note
@@ -163,6 +173,52 @@ feature -- Table
 			Result.remove_tail (1)
 			Result.append_character (close_paren)
 			Result.append_character (closing_semi_colon)
+		end
+
+feature -- Field Factory
+
+	fields: ARRAYED_LIST [TUPLE [STRING_8, INTEGER_32, BOOLEAN]]
+		attribute
+			create Result.make (10)
+		end
+
+	field_array: ARRAY [TUPLE [STRING_8, INTEGER_32, BOOLEAN]]
+			-- `fields' as {ARRAY}
+		do Result := fields.to_array end
+
+	clear_fields do fields.wipe_out end
+	add_blob_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_blob (a_fld_name)).spec) end
+	add_boolean_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_boolean (a_fld_name)).spec) end
+	add_date_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_date (a_fld_name)).spec) end
+	add_integer_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_integer (a_fld_name)).spec) end
+	add_text_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_text (a_fld_name)).spec) end
+
+	table_name: STRING
+			--
+		attribute
+			create Result.make_empty
+		end
+
+	set_table_name (a_name: STRING)
+			--
+		do
+			table_name := a_name
+		ensure
+			set: table_name.same_string (a_name)
+		end
+
+	pk_name: STRING
+			--
+		attribute
+			create Result.make_empty
+		end
+
+	set_pk_name (a_name: STRING)
+			--
+		do
+			pk_name := a_name
+		ensure
+			set: pk_name.same_string (a_name)
 		end
 
 feature -- Fields

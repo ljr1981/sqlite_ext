@@ -29,17 +29,18 @@ inherit
 feature -- Test routines
 
 	factory_tests
-			-- New test routine
+			-- create a new table SQL using SLE_FACTORY
 		local
 			l_item: SLE_FACTORY
-			l_fields: ARRAY [TUPLE [STRING_8, INTEGER_32, BOOLEAN]]
 		do
 			create l_item
-			l_fields := <<["my_integer", {SLE_CONSTANTS}.integer_type_code, {SLE_CONSTANTS}.is_asc],
-							["my_text", {SLE_CONSTANTS}.text_type_code, {SLE_CONSTANTS}.is_asc],
-							["my_boolean", {SLE_CONSTANTS}.boolean_type_code, {SLE_CONSTANTS}.is_asc],
-							["my_date", {SLE_CONSTANTS}.date_type_code, {SLE_CONSTANTS}.is_asc]>>
-			assert_strings_equal ("new_table", new_table_string, l_item.generate_new_table_sql ("my_new_table", "new_id", l_fields))
+			l_item.set_table_name ("my_new_table")
+			l_item.set_pk_name ("new_id")
+			l_item.add_integer_field ("my_integer")
+			l_item.add_text_field ("my_text")
+			l_item.add_boolean_field ("my_boolean")
+			l_item.add_date_field ("my_date")
+			assert_strings_equal ("new_table", new_table_string, l_item.new_table_sql)
 		end
 
 feature {NONE} -- Support
