@@ -159,6 +159,8 @@ feature -- Table
 					ic_fields.item.type_code
 				when integer_type_code then
 					Result.append_string_general (integer_field (ic_fields.item.name, ic_fields.item.is_asc))
+				when Real_type_code then
+					Result.append_string_general (real_field (ic_fields.item.name, ic_fields.item.is_asc))
 				when text_type_code then
 					Result.append_string_general (text_field (ic_fields.item.name, ic_fields.item.is_asc))
 				when boolean_type_code then
@@ -191,6 +193,7 @@ feature -- Field Factory
 	add_boolean_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_boolean (a_fld_name)).spec) end
 	add_date_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_date (a_fld_name)).spec) end
 	add_integer_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_integer (a_fld_name)).spec) end
+	add_real_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_real (a_fld_name)).spec) end
 	add_text_field (a_fld_name: STRING) do fields.force ((create {SLE_FIELD_SPEC}.make_text (a_fld_name)).spec) end
 
 	table_name: STRING
@@ -229,6 +232,11 @@ feature -- Fields
 			-- code more readable (i.e. call as: `integer_field' ("my_name", {SLE_CONSTANTS}.is_asc))
 		do
 			Result := field (a_name, " INTEGER ", a_is_asc)
+		end
+
+	real_field (a_name: STRING; a_is_asc: BOOLEAN): STRING
+		do
+			Result := field (a_name, " REAL ", a_is_asc)
 		end
 
 	integer_primary_key_field (a_name: STRING): STRING

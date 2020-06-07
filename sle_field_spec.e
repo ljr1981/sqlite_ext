@@ -13,6 +13,7 @@ create
 	make_boolean,
 	make_date,
 	make_integer,
+	make_real,
 	make_text
 
 feature {NONE} -- Initialization
@@ -31,6 +32,12 @@ feature {NONE} -- Initialization
 		do
 			make (a_fld_name, {SLE_CONSTANTS}.Integer_type_code, True)
 		end
+
+	make_real (a_fld_name: STRING)
+		do
+			make (a_fld_name, {SLE_CONSTANTS}.Real_type_code, True)
+		end
+
 	make_text (a_fld_name: STRING)
 		do
 			make (a_fld_name, {SLE_CONSTANTS}.Text_type_code, True)
